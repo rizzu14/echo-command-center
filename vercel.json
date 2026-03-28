@@ -2,6 +2,7 @@
   "buildCommand": "cd src/web/command-center && npm install && npm run build",
   "outputDirectory": "src/web/command-center/dist",
   "installCommand": "echo skip",
+  "framework": null,
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
