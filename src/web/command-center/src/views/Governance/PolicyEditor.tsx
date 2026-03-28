@@ -78,16 +78,35 @@ export function PolicyEditor() {
       <div className="section-header">
         <div>
           <div className="section-title">Policy Editor</div>
-          <div className="section-subtitle">YAML governance configuration</div>
+          <div className="section-subtitle">YAML governance configuration · live validation</div>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
+          {saved && (
+            <span style={{
+              fontSize: 11,
+              color: 'var(--color-accent-green)',
+              fontWeight: 700,
+              padding: '3px 10px',
+              background: 'rgba(52,208,88,0.1)',
+              borderRadius: 'var(--radius-full)',
+              border: '1px solid rgba(52,208,88,0.3)',
+              animation: 'fadeIn 0.2s ease',
+            }}>
+              ✓ Saved
+            </span>
+          )}
           <button className="btn btn-secondary btn-sm" onClick={handleReset}>Reset</button>
           <button
-            className="btn btn-primary btn-sm"
+            className="btn btn-sm"
             onClick={handleSave}
-            style={{ background: saved ? 'var(--color-accent-green)' : undefined }}
+            style={{
+              background: saved
+                ? 'linear-gradient(135deg, var(--color-accent-green), #28a745)'
+                : undefined,
+              boxShadow: saved ? '0 1px 8px rgba(52,208,88,0.3)' : undefined,
+            }}
           >
-            {saved ? '✓ Saved' : 'Save Policy'}
+            {saved ? '✓ Applied' : 'Save Policy'}
           </button>
         </div>
       </div>
@@ -95,25 +114,56 @@ export function PolicyEditor() {
       {error && (
         <div
           style={{
-            padding: 'var(--space-3)',
-            background: 'var(--color-accent-red-subtle)',
-            border: '1px solid var(--color-accent-red)',
+            padding: 'var(--space-3) var(--space-4)',
+            background: 'rgba(240,72,62,0.06)',
+            border: '1px solid rgba(240,72,62,0.35)',
             borderRadius: 'var(--radius-md)',
             fontSize: 'var(--font-size-xs)',
             color: 'var(--color-accent-red)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            borderLeft: '3px solid var(--color-accent-red)',
           }}
         >
-          ⚠ {error}
+          <span style={{ fontSize: 14 }}>⚠</span>
+          {error}
         </div>
       )}
 
       <div
         style={{
-          borderRadius: 'var(--radius-md)',
+          borderRadius: 'var(--radius-lg)',
           overflow: 'hidden',
           border: '1px solid var(--color-border)',
+          boxShadow: 'var(--shadow-sm), inset 0 0 0 1px rgba(255,255,255,0.02)',
         }}
       >
+        {/* Editor header bar */}
+        <div style={{
+          padding: '8px 16px',
+          background: 'var(--color-surface)',
+          borderBottom: '1px solid var(--color-border)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+        }}>
+          <div style={{ display: 'flex', gap: 5 }}>
+            {['#f0483e', '#f0b429', '#34d058'].map((c) => (
+              <div key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c, opacity: 0.7 }} />
+            ))}
+          </div>
+          <span style={{
+            fontSize: 10,
+            color: 'var(--color-text-muted)',
+            fontFamily: 'var(--font-mono)',
+            letterSpacing: '0.04em',
+            fontWeight: 600,
+          }}>
+            echo-governance-policy.yaml
+          </span>
+        </div>
+
         <Editor
           height="400px"
           language="yaml"
@@ -122,13 +172,17 @@ export function PolicyEditor() {
           theme="vs-dark"
           options={{
             fontSize: 13,
-            fontFamily: 'SF Mono, Fira Code, monospace',
+            fontFamily: 'SF Mono, Fira Code, Cascadia Code, monospace',
             minimap: { enabled: false },
             scrollBeyondLastLine: false,
             lineNumbers: 'on',
             renderLineHighlight: 'line',
-            padding: { top: 12, bottom: 12 },
+            padding: { top: 16, bottom: 16 },
             wordWrap: 'on',
+            lineHeight: 22,
+            letterSpacing: 0.3,
+            smoothScrolling: true,
+            cursorSmoothCaretAnimation: 'on',
           }}
         />
       </div>

@@ -9,38 +9,63 @@ export function ROISummaryCard() {
 
   return (
     <div
-      className="card"
+      className="card card-premium"
       style={{
-        background: 'linear-gradient(135deg, #161b22 0%, #1a2332 100%)',
-        border: '1px solid rgba(88, 166, 255, 0.2)',
+        background: 'linear-gradient(135deg, #0e1824 0%, #0b1a2e 60%, #0e1f1a 100%)',
+        border: '1px solid rgba(79, 163, 247, 0.2)',
         gridColumn: 'span 2',
         position: 'relative',
         overflow: 'hidden',
+        boxShadow: 'var(--shadow-card), 0 0 40px rgba(52,208,88,0.08), 0 0 80px rgba(79,163,247,0.05)',
       }}
     >
-      {/* Background glow */}
+      {/* Background glow orbs */}
       <div
         style={{
           position: 'absolute',
-          top: -60,
-          right: -60,
+          top: -80,
+          right: -40,
+          width: 260,
+          height: 260,
+          background: 'radial-gradient(circle, rgba(52, 208, 88, 0.08) 0%, transparent 65%)',
+          pointerEvents: 'none',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          bottom: -60,
+          left: -40,
           width: 200,
           height: 200,
-          background: 'radial-gradient(circle, rgba(63, 185, 80, 0.08) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(79, 163, 247, 0.06) 0%, transparent 65%)',
           pointerEvents: 'none',
         }}
       />
 
-      <div style={{ display: 'flex', gap: 'var(--space-8)', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+      {/* Top shimmer line */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 1,
+          background: 'linear-gradient(90deg, transparent, rgba(52,208,88,0.5), rgba(79,163,247,0.4), transparent)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      <div style={{ display: 'flex', gap: 'var(--space-8)', alignItems: 'flex-start', flexWrap: 'wrap', position: 'relative' }}>
         {/* Main metric */}
         <div style={{ flex: 1, minWidth: 200 }}>
           <div
             style={{
-              fontSize: 'var(--font-size-xs)',
-              fontWeight: 600,
-              color: 'var(--color-text-secondary)',
+              fontSize: 9,
+              fontWeight: 800,
+              color: 'var(--color-text-muted)',
               textTransform: 'uppercase',
-              letterSpacing: '0.06em',
+              letterSpacing: '0.1em',
               marginBottom: 'var(--space-2)',
             }}
           >
@@ -53,20 +78,24 @@ export function ROISummaryCard() {
               color: 'var(--color-accent-green)',
               lineHeight: 1,
               marginBottom: 'var(--space-2)',
+              letterSpacing: '-0.04em',
+              textShadow: '0 0 40px rgba(52,208,88,0.5)',
             }}
           >
             $<AnimatedCounter value={roiSummary.totalSavingsUsd / 1_000_000} decimals={1} suffix="M" />
           </div>
           <div
             style={{
-              fontSize: 'var(--font-size-sm)',
+              fontSize: 'var(--font-size-xs)',
               color: 'var(--color-text-secondary)',
-              fontFamily: 'SF Mono, Fira Code, monospace',
-              background: 'var(--color-surface)',
+              fontFamily: 'var(--font-mono)',
+              background: 'rgba(255,255,255,0.05)',
               padding: '4px 10px',
               borderRadius: 'var(--radius-md)',
               display: 'inline-block',
               marginTop: 'var(--space-2)',
+              border: '1px solid var(--color-border)',
+              letterSpacing: '0.01em',
             }}
           >
             ROI = (Savings − Costs) / Platform Cost × 100
@@ -74,61 +103,88 @@ export function ROISummaryCard() {
         </div>
 
         {/* Secondary metrics */}
-        <div style={{ display: 'flex', gap: 'var(--space-6)', flexWrap: 'wrap' }}>
-          <div>
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
-              ROI
+        <div style={{ display: 'flex', gap: 'var(--space-6)', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+          {[
+            {
+              label: 'ROI',
+              value: <><AnimatedCounter value={roiSummary.cumulativeRoi} suffix="%" /></>,
+              color: 'var(--color-accent-blue)',
+              glow: 'rgba(79,163,247,0.3)',
+            },
+            {
+              label: 'Annual Projection',
+              value: <>$<AnimatedCounter value={roiSummary.projectedAnnualSavings / 1_000_000} decimals={1} suffix="M" /></>,
+              color: 'var(--color-text-primary)',
+              glow: undefined,
+            },
+            {
+              label: 'Cost / Insight',
+              value: <>$<AnimatedCounter value={roiSummary.costPerInsight} decimals={2} /></>,
+              color: 'var(--color-text-primary)',
+              glow: undefined,
+            },
+          ].map((metric) => (
+            <div key={metric.label}>
+              <div style={{
+                fontSize: 9,
+                color: 'var(--color-text-muted)',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                marginBottom: 5,
+              }}>
+                {metric.label}
+              </div>
+              <div style={{
+                fontSize: 'var(--font-size-3xl)',
+                fontWeight: 800,
+                color: metric.color,
+                letterSpacing: '-0.03em',
+                textShadow: metric.glow ? `0 0 20px ${metric.glow}` : undefined,
+              }}>
+                {metric.value}
+              </div>
             </div>
-            <div style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 700, color: 'var(--color-accent-blue)' }}>
-              <AnimatedCounter value={roiSummary.cumulativeRoi} suffix="%" />
-            </div>
-          </div>
-          <div>
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
-              Annual Projection
-            </div>
-            <div style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 700, color: 'var(--color-text-primary)' }}>
-              $<AnimatedCounter value={roiSummary.projectedAnnualSavings / 1_000_000} decimals={1} suffix="M" />
-            </div>
-          </div>
-          <div>
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
-              Cost / Insight
-            </div>
-            <div style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 700, color: 'var(--color-text-primary)' }}>
-              $<AnimatedCounter value={roiSummary.costPerInsight} decimals={2} />
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Sparkline */}
-        <div style={{ width: 200, height: 80 }}>
-          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
+        <div style={{ minWidth: 180 }}>
+          <div style={{
+            fontSize: 9,
+            color: 'var(--color-text-muted)',
+            fontWeight: 800,
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+            marginBottom: 6,
+          }}>
             30-Day Trend
           </div>
-          <ResponsiveContainer width="100%" height={60}>
+          <ResponsiveContainer width="100%" height={64}>
             <AreaChart data={roiSummary.sparklineData}>
               <defs>
                 <linearGradient id="savingsGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3fb950" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#3fb950" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#34d058" stopOpacity={0.35} />
+                  <stop offset="95%" stopColor="#34d058" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <Area
                 type="monotone"
                 dataKey="value"
-                stroke="#3fb950"
+                stroke="#34d058"
                 strokeWidth={2}
                 fill="url(#savingsGradient)"
                 dot={false}
+                strokeLinecap="round"
               />
               <Tooltip
                 contentStyle={{
-                  background: 'var(--color-surface)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 6,
+                  background: 'var(--color-surface-elevated)',
+                  border: '1px solid var(--color-border-emphasis)',
+                  borderRadius: 8,
                   fontSize: 11,
                   color: 'var(--color-text-primary)',
+                  boxShadow: 'var(--shadow-lg)',
                 }}
                 formatter={(v: number) => [`$${(v / 1000).toFixed(0)}K`, 'Savings']}
                 labelStyle={{ color: 'var(--color-text-secondary)' }}

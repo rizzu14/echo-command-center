@@ -11,10 +11,10 @@ import {
 import { useEchoStore } from '../../store';
 
 const AGENT_COLORS: Record<string, string> = {
-  'Auditor': '#58a6ff',
-  'Governor': '#3fb950',
-  'Green Architect': '#bc8cff',
-  'Finance': '#d29922',
+  'Auditor': '#4fa3f7',
+  'Governor': '#34d058',
+  'Green Architect': '#a78bfa',
+  'Finance': '#f0b429',
 };
 
 function generateChartData() {
@@ -44,37 +44,88 @@ export function ReasoningAccuracyChart() {
           <div className="section-title">Reasoning Accuracy</div>
           <div className="section-subtitle">7-day accuracy trend per agent</div>
         </div>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {agents.map((agent) => {
+            const shortName = agent.name.replace(' Agent', '').replace('Green ', 'Green ');
+            const color = Object.entries(AGENT_COLORS).find(([k]) =>
+              agent.name.includes(k) || k.includes(agent.name.split(' ')[0])
+            )?.[1] ?? '#7e8da8';
+
+            return (
+              <div
+                key={agent.id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '4px 10px',
+                  background: `${color}12`,
+                  borderRadius: 'var(--radius-full)',
+                  border: `1px solid ${color}30`,
+                  cursor: 'default',
+                }}
+              >
+                <div style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: '50%',
+                  background: color,
+                  boxShadow: `0 0 6px ${color}80`,
+                }} />
+                <span style={{ fontSize: 10, color: 'var(--color-text-secondary)', fontWeight: 500 }}>
+                  {shortName}
+                </span>
+                <span style={{
+                  fontSize: 11,
+                  fontWeight: 800,
+                  color,
+                  letterSpacing: '-0.01em',
+                }}>
+                  {agent.reasoningAccuracy}%
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <ResponsiveContainer width="100%" height={240}>
         <LineChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+          <CartesianGrid strokeDasharray="2 4" stroke="var(--color-border)" opacity={0.6} />
           <XAxis
             dataKey="date"
-            tick={{ fontSize: 11, fill: 'var(--color-text-muted)' }}
+            tick={{ fontSize: 10, fill: 'var(--color-text-muted)', fontWeight: 600 }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
             domain={[85, 100]}
-            tick={{ fontSize: 11, fill: 'var(--color-text-muted)' }}
+            tick={{ fontSize: 10, fill: 'var(--color-text-muted)' }}
             axisLine={false}
             tickLine={false}
             tickFormatter={(v) => `${v}%`}
           />
           <Tooltip
             contentStyle={{
-              background: 'var(--color-surface)',
-              border: '1px solid var(--color-border)',
-              borderRadius: 6,
+              background: 'var(--color-surface-elevated)',
+              border: '1px solid var(--color-border-emphasis)',
+              borderRadius: 10,
               fontSize: 11,
               color: 'var(--color-text-primary)',
+              boxShadow: 'var(--shadow-lg)',
+              padding: '10px 14px',
             }}
             formatter={(v: number, name: string) => [`${v}%`, name]}
-            labelStyle={{ color: 'var(--color-text-secondary)', marginBottom: 4 }}
+            labelStyle={{ color: 'var(--color-text-secondary)', marginBottom: 6, fontWeight: 600 }}
+            cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 1 }}
           />
           <Legend
-            wrapperStyle={{ fontSize: 11, color: 'var(--color-text-secondary)' }}
+            wrapperStyle={{
+              fontSize: 11,
+              color: 'var(--color-text-secondary)',
+              paddingTop: 12,
+              letterSpacing: '0.02em',
+            }}
           />
           {Object.entries(AGENT_COLORS).map(([name, color]) => (
             <Line
@@ -83,41 +134,14 @@ export function ReasoningAccuracyChart() {
               dataKey={name}
               stroke={color}
               strokeWidth={2}
-              dot={{ r: 3, fill: color }}
-              activeDot={{ r: 5 }}
+              dot={{ r: 3, fill: color, strokeWidth: 0 }}
+              activeDot={{ r: 5, fill: color, strokeWidth: 2, stroke: 'var(--color-background-primary)' }}
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           ))}
         </LineChart>
       </ResponsiveContainer>
-
-      {/* Current accuracy pills */}
-      <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', marginTop: 'var(--space-3)' }}>
-        {agents.map((agent) => {
-          const shortName = agent.name.replace(' Agent', '').replace('Green ', 'Green ');
-          const color = Object.entries(AGENT_COLORS).find(([k]) =>
-            agent.name.includes(k) || k.includes(agent.name.split(' ')[0])
-          )?.[1] ?? '#8b949e';
-
-          return (
-            <div
-              key={agent.id}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                padding: '4px 10px',
-                background: 'var(--color-surface)',
-                borderRadius: 'var(--radius-full)',
-                border: `1px solid ${color}33`,
-              }}
-            >
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: color }} />
-              <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>{shortName}</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color }}>{agent.reasoningAccuracy}%</span>
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
 }

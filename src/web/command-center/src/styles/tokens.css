@@ -1,44 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 :root {
-  /* Backgrounds */
-  --color-background-primary: #0d1117;
-  --color-background-secondary: #161b22;
-  --color-surface: #21262d;
-  --color-surface-hover: #2d333b;
-  --color-surface-elevated: #2d333b;
+  /* Backgrounds — light theme */
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8f9fb;
+  --color-surface: #f1f3f7;
+  --color-surface-hover: #e8ecf2;
+  --color-surface-elevated: #e0e5ee;
 
-  /* Borders */
-  --color-border: #30363d;
-  --color-border-subtle: #21262d;
-  --color-border-emphasis: #484f58;
+  /* Borders — light theme */
+  --color-border: #dde2ec;
+  --color-border-subtle: #edf0f5;
+  --color-border-emphasis: #c4ccd9;
+  --color-border-glow: rgba(79, 130, 220, 0.25);
+  --color-border-inner: rgba(0,0,0,0.06);
 
-  /* Text */
-  --color-text-primary: #e6edf3;
-  --color-text-secondary: #8b949e;
-  --color-text-muted: #6e7681;
-  --color-text-inverse: #0d1117;
+  /* Text — light theme */
+  --color-text-primary: #0f1623;
+  --color-text-secondary: #4a5568;
+  --color-text-muted: #8896aa;
+  --color-text-inverse: #ffffff;
 
-  /* Accents */
-  --color-accent-blue: #58a6ff;
-  --color-accent-blue-subtle: rgba(88, 166, 255, 0.1);
-  --color-accent-green: #3fb950;
-  --color-accent-green-subtle: rgba(63, 185, 80, 0.1);
-  --color-accent-yellow: #d29922;
-  --color-accent-yellow-subtle: rgba(210, 153, 34, 0.1);
-  --color-accent-red: #f85149;
-  --color-accent-red-subtle: rgba(248, 81, 73, 0.1);
-  --color-accent-orange: #db6d28;
-  --color-accent-orange-subtle: rgba(219, 109, 40, 0.1);
-  --color-accent-purple: #bc8cff;
-  --color-accent-purple-subtle: rgba(188, 140, 255, 0.1);
+  /* Accents — more vivid and saturated */
+  --color-accent-blue: #4fa3f7;
+  --color-accent-blue-bright: #60b0ff;
+  --color-accent-blue-subtle: rgba(79, 163, 247, 0.1);
+  --color-accent-blue-glow: rgba(79, 163, 247, 0.18);
+
+  --color-accent-green: #34d058;
+  --color-accent-green-bright: #4ade6e;
+  --color-accent-green-subtle: rgba(52, 208, 88, 0.1);
+  --color-accent-green-glow: rgba(52, 208, 88, 0.15);
+
+  --color-accent-yellow: #f0b429;
+  --color-accent-yellow-subtle: rgba(240, 180, 41, 0.1);
+
+  --color-accent-red: #f0483e;
+  --color-accent-red-subtle: rgba(240, 72, 62, 0.1);
+  --color-accent-red-glow: rgba(240, 72, 62, 0.2);
+
+  --color-accent-orange: #f87b2b;
+  --color-accent-orange-subtle: rgba(248, 123, 43, 0.1);
+
+  --color-accent-purple: #a78bfa;
+  --color-accent-purple-subtle: rgba(167, 139, 250, 0.12);
+  --color-accent-purple-glow: rgba(167, 139, 250, 0.2);
 
   /* Semantic */
-  --color-success: #3fb950;
-  --color-warning: #d29922;
-  --color-danger: #f85149;
-  --color-info: #58a6ff;
+  --color-success: #34d058;
+  --color-warning: #f0b429;
+  --color-danger: #f0483e;
+  --color-info: #4fa3f7;
 
   /* Typography */
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+
   --font-size-xs: 11px;
   --font-size-sm: 12px;
   --font-size-base: 14px;
@@ -61,7 +78,7 @@
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.7;
 
-  /* Spacing */
+  /* Spacing (8px system) */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -76,29 +93,35 @@
   /* Radius */
   --radius-sm: 4px;
   --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-2xl: 16px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 18px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.7);
-  --shadow-glow-blue: 0 0 20px rgba(88, 166, 255, 0.15);
-  --shadow-glow-green: 0 0 20px rgba(63, 185, 80, 0.15);
-  --shadow-glow-red: 0 0 20px rgba(248, 81, 73, 0.2);
+  /* Shadows — light theme */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 16px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.1);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 20px rgba(0, 0, 0, 0.07), inset 0 1px 0 rgba(255,255,255,0.8);
+  --shadow-card-hover: 0 2px 4px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255,255,255,0.9);
+  --shadow-card-glow: 0 0 0 1px rgba(79,130,220,0.12), 0 4px 24px rgba(79,130,220,0.08);
+  --shadow-inset-subtle: inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.05);
 
   /* Transitions */
-  --transition-fast: all 0.1s ease;
-  --transition-base: all 0.15s ease;
-  --transition-slow: all 0.25s ease;
+  --transition-fast: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-micro: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Gradients */
+  --gradient-surface-premium: linear-gradient(135deg, #0e1824 0%, #0b1a2e 50%, #0e1f1a 100%);
 
   /* Layout */
-  --nav-width: 220px;
+  --nav-width: 224px;
   --nav-width-collapsed: 60px;
-  --topnav-height: 56px;
+  --topnav-height: 60px;
   --content-max-width: 1600px;
 
   /* Z-index */

@@ -23,20 +23,53 @@ export function KillSwitchButton() {
       <div
         style={{
           padding: 'var(--space-8)',
-          background: 'var(--color-background-secondary)',
+          background: killSwitchActive
+            ? 'linear-gradient(135deg, rgba(240,72,62,0.08) 0%, rgba(240,72,62,0.04) 100%)'
+            : 'var(--color-background-secondary)',
+          backgroundImage: killSwitchActive ? undefined : 'linear-gradient(145deg, rgba(255,255,255,0.025) 0%, transparent 60%)',
           border: killSwitchActive
-            ? '1px solid var(--color-accent-red)'
+            ? '1px solid rgba(240,72,62,0.5)'
             : '1px solid var(--color-border)',
           borderRadius: 'var(--radius-xl)',
           textAlign: 'center',
           animation: killSwitchActive ? 'borderPulse 1.5s ease-in-out infinite' : 'none',
+          boxShadow: killSwitchActive
+            ? '0 0 40px rgba(240,72,62,0.15), var(--shadow-card)'
+            : 'var(--shadow-card)',
+          transition: 'all 0.3s ease',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <div style={{ marginBottom: 'var(--space-4)' }}>
-          <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: 4 }}>
+        {/* Background glow when active */}
+        {killSwitchActive && (
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 200,
+            height: 200,
+            background: 'radial-gradient(circle, rgba(240,72,62,0.12) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }} />
+        )}
+
+        <div style={{ marginBottom: 'var(--space-5)', position: 'relative' }}>
+          <div style={{
+            fontSize: 'var(--font-size-xl)',
+            fontWeight: 700,
+            color: killSwitchActive ? 'var(--color-accent-red)' : 'var(--color-text-primary)',
+            marginBottom: 6,
+            letterSpacing: '-0.02em',
+          }}>
             Emergency Control
           </div>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
+          <div style={{
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--color-text-secondary)',
+            lineHeight: 1.5,
+          }}>
             {killSwitchActive
               ? 'All autonomous agent actions are currently HALTED'
               : 'Immediately halt all autonomous agent actions'}
@@ -50,27 +83,35 @@ export function KillSwitchButton() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 'var(--space-2)',
-                padding: 'var(--space-2) var(--space-4)',
-                background: 'var(--color-accent-red-subtle)',
-                border: '1px solid var(--color-accent-red)',
-                borderRadius: 'var(--radius-md)',
+                padding: 'var(--space-3) var(--space-5)',
+                background: 'rgba(240,72,62,0.12)',
+                border: '1px solid rgba(240,72,62,0.5)',
+                borderRadius: 'var(--radius-lg)',
                 color: 'var(--color-accent-red)',
                 fontSize: 'var(--font-size-sm)',
-                fontWeight: 700,
-                marginBottom: 'var(--space-4)',
+                fontWeight: 800,
+                marginBottom: 'var(--space-5)',
                 animation: 'pulse 1.5s ease-in-out infinite',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
               }}
             >
-              <span style={{ fontSize: 16 }}>⬛</span>
-              KILL SWITCH ACTIVE — ALL AGENTS HALTED
+              <div style={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                background: 'currentColor',
+                boxShadow: '0 0 8px currentColor',
+              }} />
+              Kill Switch Active — All Agents Halted
             </div>
             <br />
             <button
               className="btn btn-success btn-lg"
               onClick={handleResume}
-              style={{ minWidth: 240 }}
+              style={{ minWidth: 240, letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: 13 }}
             >
-              ▶ RESUME OPERATIONS
+              ▶ Resume Operations
             </button>
           </div>
         ) : (
@@ -80,11 +121,12 @@ export function KillSwitchButton() {
             style={{
               minWidth: 240,
               fontWeight: 800,
-              letterSpacing: '0.05em',
-              fontSize: 'var(--font-size-md)',
+              letterSpacing: '0.06em',
+              fontSize: 13,
+              textTransform: 'uppercase',
             }}
           >
-            ⬛ EMERGENCY STOP
+            ⬛ Emergency Stop
           </button>
         )}
       </div>
@@ -94,8 +136,19 @@ export function KillSwitchButton() {
         <div className="modal-overlay" onClick={() => { setShowModal(false); setConfirmText(''); }}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <div className="modal-title" style={{ color: 'var(--color-accent-red)' }}>
-                ⚠ Confirm Emergency Stop
+              <div className="modal-title" style={{ color: 'var(--color-accent-red)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 28,
+                  height: 28,
+                  borderRadius: '50%',
+                  background: 'var(--color-accent-red-subtle)',
+                  border: '1px solid var(--color-accent-red)',
+                  fontSize: 14,
+                }}>⚠</span>
+                Confirm Emergency Stop
               </div>
               <button className="modal-close" onClick={() => { setShowModal(false); setConfirmText(''); }}>✕</button>
             </div>
@@ -103,13 +156,14 @@ export function KillSwitchButton() {
             <div
               style={{
                 padding: 'var(--space-4)',
-                background: 'var(--color-accent-red-subtle)',
-                border: '1px solid var(--color-accent-red)',
-                borderRadius: 'var(--radius-md)',
+                background: 'rgba(240,72,62,0.06)',
+                border: '1px solid rgba(240,72,62,0.3)',
+                borderRadius: 'var(--radius-lg)',
                 marginBottom: 'var(--space-6)',
                 fontSize: 'var(--font-size-sm)',
                 color: 'var(--color-text-primary)',
-                lineHeight: 1.6,
+                lineHeight: 1.7,
+                borderLeft: '3px solid var(--color-accent-red)',
               }}
             >
               This will <strong>immediately halt ALL autonomous agent actions</strong> across the entire platform.
@@ -137,11 +191,13 @@ export function KillSwitchButton() {
                   padding: 'var(--space-3)',
                   background: 'var(--color-surface)',
                   border: `1px solid ${confirmText === 'CONFIRM' ? 'var(--color-accent-red)' : 'var(--color-border)'}`,
+                  boxShadow: confirmText === 'CONFIRM' ? '0 0 0 3px rgba(240,72,62,0.15)' : 'none',
                   borderRadius: 'var(--radius-md)',
-                  color: 'var(--color-text-primary)',
+                  color: confirmText === 'CONFIRM' ? 'var(--color-accent-red)' : 'var(--color-text-primary)',
                   fontSize: 'var(--font-size-md)',
-                  fontWeight: 600,
-                  letterSpacing: '0.05em',
+                  fontWeight: 700,
+                  letterSpacing: '0.06em',
+                  transition: 'all 0.18s ease',
                 }}
                 autoFocus
                 onKeyDown={(e) => e.key === 'Enter' && handleActivate()}
@@ -157,11 +213,15 @@ export function KillSwitchButton() {
                 onClick={handleActivate}
                 disabled={confirmText !== 'CONFIRM'}
                 style={{
-                  opacity: confirmText === 'CONFIRM' ? 1 : 0.4,
+                  opacity: confirmText === 'CONFIRM' ? 1 : 0.35,
                   cursor: confirmText === 'CONFIRM' ? 'pointer' : 'not-allowed',
+                  letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                  fontSize: 11,
+                  fontWeight: 800,
                 }}
               >
-                ⬛ HALT ALL AGENTS
+                ⬛ Halt All Agents
               </button>
             </div>
           </div>

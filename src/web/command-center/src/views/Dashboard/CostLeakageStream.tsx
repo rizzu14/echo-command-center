@@ -33,9 +33,10 @@ export function CostLeakageStream() {
             display: 'flex',
             alignItems: 'center',
             gap: 6,
-            fontSize: 'var(--font-size-xs)',
-            color: 'var(--color-accent-green)',
-            fontWeight: 600,
+            padding: '4px 10px',
+            background: 'rgba(52,208,88,0.08)',
+            border: '1px solid rgba(52,208,88,0.25)',
+            borderRadius: 'var(--radius-full)',
           }}
         >
           <div
@@ -44,10 +45,19 @@ export function CostLeakageStream() {
               height: 6,
               borderRadius: '50%',
               background: 'var(--color-accent-green)',
+              boxShadow: '0 0 8px var(--color-accent-green), 0 0 16px rgba(52,208,88,0.4)',
               animation: 'pulse 2s ease-in-out infinite',
             }}
           />
-          LIVE
+          <span style={{
+            fontSize: 10,
+            color: 'var(--color-accent-green)',
+            fontWeight: 800,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+          }}>
+            LIVE
+          </span>
         </div>
       </div>
 
@@ -71,27 +81,46 @@ export function CostLeakageStream() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 'var(--space-3)',
-                padding: 'var(--space-2) var(--space-3)',
+                padding: '8px var(--space-3)',
                 borderRadius: 'var(--radius-md)',
-                background: isNew ? 'rgba(63, 185, 80, 0.04)' : 'transparent',
-                border: isNew ? '1px solid rgba(63, 185, 80, 0.1)' : '1px solid transparent',
-                transition: 'var(--transition-base)',
-                animation: isNew ? 'fadeIn 0.3s ease' : 'none',
+                background: isNew
+                  ? 'linear-gradient(90deg, rgba(52,208,88,0.05) 0%, transparent 80%)'
+                  : 'transparent',
+                border: isNew
+                  ? '1px solid rgba(52,208,88,0.12)'
+                  : '1px solid transparent',
+                transition: 'var(--transition-fast)',
+                animation: isNew ? 'fadeIn 0.35s ease' : 'none',
+                cursor: 'default',
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background = 'var(--color-surface)';
+                (e.currentTarget as HTMLElement).style.borderColor = 'var(--color-border)';
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background = isNew
+                  ? 'linear-gradient(90deg, rgba(52,208,88,0.05) 0%, transparent 80%)'
+                  : 'transparent';
+                (e.currentTarget as HTMLElement).style.borderColor = isNew
+                  ? 'rgba(52,208,88,0.12)'
+                  : 'transparent';
               }}
             >
               {/* Category badge */}
               <span
                 style={{
-                  padding: '2px 7px',
+                  padding: '3px 8px',
                   borderRadius: 'var(--radius-full)',
                   background: cat.bg,
                   color: cat.color,
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: '0.04em',
+                  fontSize: 9,
+                  fontWeight: 800,
+                  letterSpacing: '0.06em',
                   flexShrink: 0,
                   minWidth: 72,
                   textAlign: 'center',
+                  border: `1px solid ${cat.color}25`,
+                  textTransform: 'uppercase',
                 }}
               >
                 {cat.label}
@@ -101,19 +130,25 @@ export function CostLeakageStream() {
               <span
                 style={{
                   fontSize: 'var(--font-size-xs)',
-                  fontFamily: 'SF Mono, Fira Code, monospace',
+                  fontFamily: 'var(--font-mono)',
                   color: 'var(--color-text-primary)',
                   flex: 1,
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
+                  fontWeight: 500,
                 }}
               >
                 {event.resourceId}
               </span>
 
               {/* Provider + region */}
-              <span style={{ fontSize: 10, color: 'var(--color-text-muted)', flexShrink: 0 }}>
+              <span style={{
+                fontSize: 10,
+                color: 'var(--color-text-muted)',
+                flexShrink: 0,
+                fontWeight: 500,
+              }}>
                 {event.provider} · {event.region}
               </span>
 
@@ -121,11 +156,13 @@ export function CostLeakageStream() {
               <span
                 style={{
                   fontSize: 'var(--font-size-sm)',
-                  fontWeight: 700,
+                  fontWeight: 800,
                   color: 'var(--color-accent-red)',
                   flexShrink: 0,
-                  minWidth: 60,
+                  minWidth: 64,
                   textAlign: 'right',
+                  letterSpacing: '-0.01em',
+                  fontFamily: 'var(--font-mono)',
                 }}
               >
                 ${event.hourlyCostUsd.toFixed(2)}/hr

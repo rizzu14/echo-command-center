@@ -10,6 +10,12 @@ const TIER_COLORS: Record<string, string> = {
   DEEP: 'var(--color-accent-purple)',
 };
 
+const TIER_BG: Record<string, string> = {
+  FAST: 'rgba(52,208,88,0.1)',
+  MEDIUM: 'rgba(240,180,41,0.1)',
+  DEEP: 'rgba(167,139,250,0.1)',
+};
+
 function AccuracyCell({ value }: { value: number }) {
   const color =
     value >= 90 ? 'var(--color-accent-green)' :
@@ -17,7 +23,28 @@ function AccuracyCell({ value }: { value: number }) {
     'var(--color-accent-red)';
 
   return (
-    <span style={{ color, fontWeight: 700 }}>{value.toFixed(1)}%</span>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      {/* Mini bar */}
+      <div style={{
+        width: 40,
+        height: 3,
+        background: 'var(--color-border)',
+        borderRadius: 'var(--radius-full)',
+        overflow: 'hidden',
+        flexShrink: 0,
+      }}>
+        <div style={{
+          width: `${value}%`,
+          height: '100%',
+          background: color,
+          borderRadius: 'var(--radius-full)',
+          boxShadow: `0 0 4px ${color}80`,
+        }} />
+      </div>
+      <span style={{ color, fontWeight: 700, fontSize: 12, letterSpacing: '-0.01em' }}>
+        {value.toFixed(1)}%
+      </span>
+    </div>
   );
 }
 
@@ -42,8 +69,16 @@ export function ModelPerformanceTable() {
     else { setSortKey(key); setSortAsc(true); }
   };
 
-  const SortIcon = ({ k }: { k: SortKey }) =>
-    sortKey === k ? (sortAsc ? ' ↑' : ' ↓') : ' ·';
+  const SortIcon = ({ k }: { k: SortKey }) => (
+    <span style={{
+      marginLeft: 4,
+      fontSize: 9,
+      opacity: sortKey === k ? 1 : 0.3,
+      color: sortKey === k ? 'var(--color-accent-blue)' : undefined,
+    }}>
+      {sortKey === k ? (sortAsc ? '↑' : '↓') : '↕'}
+    </span>
+  );
 
   return (
     <div className="card">
@@ -51,6 +86,14 @@ export function ModelPerformanceTable() {
         <div>
           <div className="section-title">Model Performance</div>
           <div className="section-subtitle">AI provider benchmarks across reasoning tiers</div>
+        </div>
+        <div style={{
+          fontSize: 10,
+          color: 'var(--color-text-muted)',
+          fontWeight: 600,
+          letterSpacing: '0.04em',
+        }}>
+          {sorted.length} models
         </div>
       </div>
 
@@ -70,35 +113,72 @@ export function ModelPerformanceTable() {
           <tbody>
             {sorted.map((model) => (
               <tr key={`${model.provider}-${model.model}`}>
-                <td style={{ fontWeight: 600 }}>{model.provider}</td>
-                <td style={{ fontFamily: 'SF Mono, Fira Code, monospace', fontSize: 12 }}>{model.model}</td>
+                <td>
+                  <span style={{ fontWeight: 700, color: 'var(--color-text-primary)' }}>
+                    {model.provider}
+                  </span>
+                </td>
+                <td>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    color: 'var(--color-accent-blue)',
+                    background: 'var(--color-accent-blue-subtle)',
+                    padding: '2px 7px',
+                    borderRadius: 'var(--radius-md)',
+                    letterSpacing: '0.01em',
+                  }}>
+                    {model.model}
+                  </span>
+                </td>
                 <td>
                   <span
                     style={{
-                      padding: '2px 8px',
+                      padding: '3px 9px',
                       borderRadius: 'var(--radius-full)',
-                      background: `${TIER_COLORS[model.tier]}22`,
+                      background: TIER_BG[model.tier],
                       color: TIER_COLORS[model.tier],
-                      fontSize: 10,
-                      fontWeight: 700,
+                      fontSize: 9,
+                      fontWeight: 800,
                       textTransform: 'uppercase',
-                      letterSpacing: '0.04em',
+                      letterSpacing: '0.07em',
+                      border: `1px solid ${TIER_COLORS[model.tier]}30`,
                     }}
                   >
                     {model.tier}
                   </span>
                 </td>
-                <td style={{ color: 'var(--color-text-secondary)' }}>
-                  {model.latencyMs >= 1000
-                    ? `${(model.latencyMs / 1000).toFixed(1)}s`
-                    : `${model.latencyMs}ms`}
+                <td>
+                  <span style={{
+                    color: model.latencyMs < 1000 ? 'var(--color-accent-green)' : 'var(--color-text-secondary)',
+                    fontWeight: 600,
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 12,
+                  }}>
+                    {model.latencyMs >= 1000
+                      ? `${(model.latencyMs / 1000).toFixed(1)}s`
+                      : `${model.latencyMs}ms`}
+                  </span>
                 </td>
-                <td style={{ fontFamily: 'SF Mono, Fira Code, monospace', fontSize: 12, color: 'var(--color-text-secondary)' }}>
-                  ${model.costPerToken.toFixed(6)}
+                <td>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 11,
+                    color: 'var(--color-text-secondary)',
+                  }}>
+                    ${model.costPerToken.toFixed(6)}
+                  </span>
                 </td>
                 <td><AccuracyCell value={model.accuracyPct} /></td>
-                <td style={{ color: 'var(--color-text-secondary)' }}>
-                  {model.requestsToday.toLocaleString()}
+                <td>
+                  <span style={{
+                    color: 'var(--color-text-primary)',
+                    fontWeight: 600,
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 12,
+                  }}>
+                    {model.requestsToday.toLocaleString()}
+                  </span>
                 </td>
               </tr>
             ))}

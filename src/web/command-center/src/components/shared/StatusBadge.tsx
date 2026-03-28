@@ -51,9 +51,10 @@ export function StatusBadge({ status, size = 'md', dot = false }: StatusBadgePro
         borderRadius: 'var(--radius-full)',
         background: config.bg,
         color: config.color,
-        fontSize: size === 'sm' ? 'var(--font-size-xs)' : '11px',
-        fontWeight: 'var(--font-weight-semibold)',
-        letterSpacing: '0.02em',
+        border: `1px solid ${config.color}4D`,
+        fontSize: size === 'sm' ? '10px' : '11px',
+        fontWeight: 700,
+        letterSpacing: '0.04em',
         whiteSpace: 'nowrap',
         textTransform: 'uppercase',
       }}
@@ -66,6 +67,8 @@ export function StatusBadge({ status, size = 'md', dot = false }: StatusBadgePro
             borderRadius: '50%',
             background: config.color,
             flexShrink: 0,
+            boxShadow: '0 0 6px currentColor',
+            animation: ['HEALTHY', 'APPROVED', 'PASSED'].includes(status) ? 'pulse 3s ease-in-out infinite' : undefined,
           }}
         />
       )}
