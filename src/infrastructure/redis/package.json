@@ -1,0 +1,20 @@
+{
+  "name": "@echo/redis-infrastructure",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Redis cluster client, digital twin store, plan cache, DoW accumulator, and health registry for ECHO",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.4"
+  }
+}

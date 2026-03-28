@@ -1,0 +1,35 @@
+{
+  "name": "@echo/kafka-infrastructure",
+  "version": "1.0.0",
+  "description": "ECHO Kafka event bus infrastructure",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --runInBand",
+    "test:run": "jest --runInBand --forceExit",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": ["**/*.test.ts"],
+    "globals": {
+      "ts-jest": {
+        "tsconfig": {
+          "strict": true
+        }
+      }
+    }
+  }
+}

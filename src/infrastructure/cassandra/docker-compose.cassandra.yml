@@ -1,0 +1,77 @@
+version: "3.8"
+
+# 3-node Cassandra cluster for local development (Liquid Ledger storage)
+services:
+  cassandra-1:
+    image: cassandra:4.1
+    container_name: echo-cassandra-1
+    hostname: cassandra-1
+    environment:
+      CASSANDRA_CLUSTER_NAME: "echo-liquid-ledger"
+      CASSANDRA_DC: "datacenter1"
+      CASSANDRA_RACK: "rack1"
+      CASSANDRA_SEEDS: "cassandra-1"
+      CASSANDRA_ENDPOINT_SNITCH: "GossipingPropertyFileSnitch"
+      HEAP_NEWSIZE: "128M"
+      MAX_HEAP_SIZE: "512M"
+    ports:
+      - "9042:9042"
+    volumes:
+      - cassandra1-data:/var/lib/cassandra
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    networks:
+      - cassandra-net
+
+  cassandra-2:
+    image: cassandra:4.1
+    container_name: echo-cassandra-2
+    hostname: cassandra-2
+    environment:
+      CASSANDRA_CLUSTER_NAME: "echo-liquid-ledger"
+      CASSANDRA_DC: "datacenter1"
+      CASSANDRA_RACK: "rack1"
+      CASSANDRA_SEEDS: "cassandra-1"
+      CASSANDRA_ENDPOINT_SNITCH: "GossipingPropertyFileSnitch"
+      HEAP_NEWSIZE: "128M"
+      MAX_HEAP_SIZE: "512M"
+    volumes:
+      - cassandra2-data:/var/lib/cassandra
+    depends_on:
+      cassandra-1:
+        condition: service_healthy
+    networks:
+      - cassandra-net
+
+  cassandra-3:
+    image: cassandra:4.1
+    container_name: echo-cassandra-3
+    hostname: cassandra-3
+    environment:
+      CASSANDRA_CLUSTER_NAME: "echo-liquid-ledger"
+      CASSANDRA_DC: "datacenter1"
+      CASSANDRA_RACK: "rack1"
+      CASSANDRA_SEEDS: "cassandra-1"
+      CASSANDRA_ENDPOINT_SNITCH: "GossipingPropertyFileSnitch"
+      HEAP_NEWSIZE: "128M"
+      MAX_HEAP_SIZE: "512M"
+    volumes:
+      - cassandra3-data:/var/lib/cassandra
+    depends_on:
+      cassandra-1:
+        condition: service_healthy
+    networks:
+      - cassandra-net
+
+volumes:
+  cassandra1-data:
+  cassandra2-data:
+  cassandra3-data:
+
+networks:
+  cassandra-net:
+    driver: bridge
