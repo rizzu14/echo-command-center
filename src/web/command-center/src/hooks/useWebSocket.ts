@@ -80,9 +80,9 @@ export function useWebSocket(tenantId: string) {
     }
   }, []);
 
-  const wsUrl = typeof __WS_BACKEND_URL__ !== 'undefined'
-    ? `${__WS_BACKEND_URL__}/ws?tenant_id=${tenantId}`
-    : `ws://localhost:8080/ws?tenant_id=${tenantId}`;
+  const backendUrl = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8080';
+  const wsBase = backendUrl.replace(/^https/, 'wss').replace(/^http/, 'ws');
+  const wsUrl = `${wsBase}/ws?tenant_id=${tenantId}`;
 
   const connect = useCallback(() => {
     if (!mountedRef.current) return;
