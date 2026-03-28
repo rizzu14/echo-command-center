@@ -154,6 +154,7 @@ export function ParticleCanvas() {
       mouse.current = { x: -9999, y: -9999 };
     }
     function onResize() {
+      if (!canvas) return;
       W = window.innerWidth;
       H = window.innerHeight;
       canvas.width = W;
