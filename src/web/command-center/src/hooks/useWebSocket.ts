@@ -80,7 +80,7 @@ export function useWebSocket(tenantId: string) {
     }
   }, []);
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8080';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://echo-backend-w35k.onrender.com';
   const wsBase = backendUrl.replace(/^https/, 'wss').replace(/^http/, 'ws');
   const wsUrl = `${wsBase}/ws?tenant_id=${tenantId}`;
 
