@@ -2,12 +2,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ParticleCanvas } from './ParticleCanvas';
 
+// ── Google OAuth config ──────────────────────────────────────────────────────
+// Replace with your actual Google Client ID from console.cloud.google.com
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '';
+const ALLOWED_DOMAIN = 'echojunction.io'; // Only allow this domain to sign in
+
 type Step = 'credentials' | 'mfa';
 
-// Demo credentials — in production these would be validated server-side
 const DEMO_EMAIL = 'admin@echojunction.io';
-const DEMO_PASSWORD = 'Echo@2024';
-const DEMO_MFA_CODE = '123456';
+const DEMO_PASSWORD = 'Echo@2024!Secure#99';
+const DEMO_MFA_CODE = '847291';
 
 export function Login() {
   const navigate = useNavigate();
@@ -30,7 +34,7 @@ export function Login() {
       if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
         setStep('mfa');
       } else {
-        setError('Invalid email or password. Try admin@echojunction.io / Echo@2024');
+        setError('Invalid email or password.');
       }
     }, 900);
   }
@@ -66,7 +70,7 @@ export function Login() {
         sessionStorage.setItem('ej_auth', 'true');
         navigate('/');
       } else {
-        setError('Invalid code. Use 123456 for demo.');
+        setError('Invalid code. Use 847291 for demo.');
         setMfaDigits(['', '', '', '', '', '']);
         setMfaCode('');
       }
@@ -282,6 +286,51 @@ export function Login() {
               </button>
             </form>
 
+            {/* Divider */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0' }}>
+              <div style={{ flex: 1, height: 1, background: 'rgba(0,0,0,0.08)' }} />
+              <span style={{ fontSize: 12, color: '#86868b', whiteSpace: 'nowrap' }}>or continue with</span>
+              <div style={{ flex: 1, height: 1, background: 'rgba(0,0,0,0.08)' }} />
+            </div>
+
+            {/* Google Sign In */}
+            <button
+              type="button"
+              onClick={() => {
+                if (!GOOGLE_CLIENT_ID) {
+                  setError('Google OAuth not configured. Use email/password above.');
+                  return;
+                }
+                const params = new URLSearchParams({
+                  client_id: GOOGLE_CLIENT_ID,
+                  redirect_uri: window.location.origin,
+                  response_type: 'token',
+                  scope: 'email profile',
+                  prompt: 'select_account',
+                });
+                window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+              }}
+              style={{
+                width: '100%', padding: '11px 14px', borderRadius: 10,
+                border: '1px solid rgba(0,0,0,0.15)', background: 'white',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                fontSize: 14, fontWeight: 500, color: '#1d1d1f', cursor: 'pointer',
+                fontFamily: 'inherit', letterSpacing: '-0.01em',
+                transition: 'all 0.15s ease', boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#f8f8f8'; (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'white'; (e.currentTarget as HTMLElement).style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'; }}
+            >
+              {/* Google logo */}
+              <svg width="18" height="18" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+              </svg>
+              Sign in with Google
+            </button>
+
             {/* Security badge */}
             <div style={{
               marginTop: 24, padding: '10px 14px', borderRadius: 10,
@@ -421,7 +470,7 @@ export function Login() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
               </svg>
-              Demo code: <strong>123456</strong>
+              Demo code: <strong>847291</strong>
             </div>
           </>
         )}
