@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useGoogleLogin } from '@react-oauth/google';
 import { ParticleCanvas } from './ParticleCanvas';
-
-// ── Google OAuth config ──────────────────────────────────────────────────────
-// Replace with your actual Google Client ID from console.cloud.google.com
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '';
-const ALLOWED_DOMAIN = 'echojunction.io'; // Only allow this domain to sign in
 
 type Step = 'credentials' | 'mfa';
 
@@ -23,6 +19,27 @@ export function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [mfaDigits, setMfaDigits] = useState(['', '', '', '', '', '']);
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      // Fetch user info from Google
+      fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+      })
+        .then((r) => r.json())
+        .then((user) => {
+          sessionStorage.setItem('ej_auth', 'true');
+          sessionStorage.setItem('ej_user', JSON.stringify({
+            name: user.name,
+            email: user.email,
+            picture: user.picture,
+          }));
+          navigate('/');
+        })
+        .catch(() => setError('Google sign-in failed. Please try again.'));
+    },
+    onError: () => setError('Google sign-in was cancelled or failed.'),
+  });
 
   function handleCredentials(e: React.FormEvent) {
     e.preventDefault();
@@ -297,18 +314,11 @@ export function Login() {
             <button
               type="button"
               onClick={() => {
-                if (!GOOGLE_CLIENT_ID) {
-                  setError('Google OAuth not configured. Use email/password above.');
+                if (!import.meta.env.VITE_GOOGLE_CLIENT_ID) {
+                  setError('Google OAuth not configured yet. Add VITE_GOOGLE_CLIENT_ID to Vercel env vars.');
                   return;
                 }
-                const params = new URLSearchParams({
-                  client_id: GOOGLE_CLIENT_ID,
-                  redirect_uri: window.location.origin,
-                  response_type: 'token',
-                  scope: 'email profile',
-                  prompt: 'select_account',
-                });
-                window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+                googleLogin();
               }}
               style={{
                 width: '100%', padding: '11px 14px', borderRadius: 10,
